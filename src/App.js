@@ -1,25 +1,47 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState, useEffect } from 'react';
+import Card from 'react-bootstrap/Card';
 
 function App() {
+  const [movies, setMovies] = useState(null);
+
+  useEffect(() => {
+    getData();
+  
+    async function getData() {
+      const res = await fetch("https://imdb-api.com/en/API/Top250Movies/k_yoz6v0f4");
+      const data = await res.json();
+      
+      setMovies(data);
+    }
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Top 250 Movies</h1>
+      {movies && (
+        <div style={{display: 'flex', flexWrap: 'wrap' }} className="movies">
+          {movies?.items.map((movie, index) => (
+            <Movie index={index} movie={movie}/>
+          ))}
+        </div>
+      )}
     </div>
   );
+
+
+}
+function Movie(props) {
+  return (
+    <div key={props.index}>
+      <Card style={{ width: '10rem', margin: '40px'}}>
+        <Card.Img style={{ }} variant="top" src={props.movie.image} />
+        <Card.Body>
+          <Card.Title>{props.movie.title} ({props.movie.year})</Card.Title>
+        </Card.Body>
+      </Card>
+    </div>
+  )
 }
 
 export default App;
