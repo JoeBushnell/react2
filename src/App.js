@@ -6,15 +6,25 @@ import Card from 'react-bootstrap/Card';
 function App() {
   const [movies, setMovies] = useState(null);
 
-  useEffect(() => {
-    getData();
-  
+  useEffect(async () => {
+    
     async function getData() {
       const res = await fetch("https://imdb-api.com/en/API/Top250Movies/k_yoz6v0f4");
       const data = await res.json();
-      
+      localStorage.setItem('top250', JSON.stringify(data));
+       
       setMovies(data);
     }
+
+    const top250 = localStorage.getItem('top250')
+    if (!top250){
+      getData();
+    }
+    else {
+      setMovies(JSON.parse(top250));
+    }
+    
+    
   }, []);
   return (
     <div className="App">
