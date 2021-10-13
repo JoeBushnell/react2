@@ -1,57 +1,75 @@
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect } from 'react';
-import Card from 'react-bootstrap/Card';
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Switch,
+  Route,
+  Link,
+  BrowserRouter,
+  useParams,
+} from "react-router-dom";
+import Top250Movies from "./Components/Top250Movies";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import MovieDetails from "./Components/MovieDetails";
 
 function App() {
-  const [movies, setMovies] = useState(null);
-
-  useEffect(async () => {
-    
-    async function getData() {
-      const res = await fetch("https://imdb-api.com/en/API/Top250Movies/k_yoz6v0f4");
-      const data = await res.json();
-      localStorage.setItem('top250', JSON.stringify(data));
-       
-      setMovies(data);
-    }
-
-    const top250 = localStorage.getItem('top250')
-    if (!top250){
-      getData();
-    }
-    else {
-      setMovies(JSON.parse(top250));
-    }
-    
-    
-  }, []);
   return (
-    <div className="App">
-      <h1>Top 250 Movies</h1>
-      {movies && (
-        <div style={{display: 'flex', flexWrap: 'wrap' }} className="movies">
-          {movies?.items.map((movie, index) => (
-            <Movie index={index} movie={movie}/>
-          ))}
+    <BrowserRouter>
+      <main>
+        <div className="App">
+          <Navbar bg="light" expand="lg">
+            <Container>
+              <Navbar.Brand href="#home">Joe Bushnell Test</Navbar.Brand>
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="me-auto">
+                  <Nav.Link href="#home">
+                    <Link to="/Top250">Top 250</Link>
+                  </Nav.Link>
+                  <Nav.Link href="#link">Link</Nav.Link>
+                  <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                    <NavDropdown.Item href="#action/3.1">
+                      Action
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.2">
+                      Another action
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.3">
+                      Something
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action/3.4">
+                      Separated link
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </Nav>
+              </Navbar.Collapse>
+            </Container>
+          </Navbar>
+          <Switch>
+            <Route exact path="/"></Route>
+            <Route path="/Top250">
+              <Top250Movies />
+            </Route>
+            <Route path="/movies/:id">
+              <MovieDetails />
+            </Route>
+          </Switch>
         </div>
-      )}
+      </main>
+    </BrowserRouter>
+  );
+}
+
+function Child() {
+  // We can use the `useParams` hook here to access
+  // the dynamic pieces of the URL.
+  let { id } = useParams();
+
+  return (
+    <div>
+      <h3>ID: {id}</h3>
     </div>
   );
-
-
-}
-function Movie(props) {
-  return (
-    <div key={props.index}>
-      <Card style={{ width: '10rem', margin: '40px'}}>
-        <Card.Img style={{ }} variant="top" src={props.movie.image} />
-        <Card.Body>
-          <Card.Title>{props.movie.title} ({props.movie.year})</Card.Title>
-        </Card.Body>
-      </Card>
-    </div>
-  )
 }
 
 export default App;
