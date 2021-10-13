@@ -1,0 +1,9 @@
+.card {
+  width: 10rem;
+  margin: 40px;
+}
+
+.movies {
+  display: flex;
+  flex-wrap: wrap;
+}
